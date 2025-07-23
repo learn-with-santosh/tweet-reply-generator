@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Professional Tweet Reply Assistant</title>
+    <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --border-color: #dee2e6;
+      --primary-color: #0d6efd;
+      --primary-hover: #0b5ed7;
+      --secondary-color: #6c757d;
+      --success-color: #198754;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --light-gray: #f1f3f5;
+      --dark-gray: #495057;
+    }
+    
+    .dark-mode {
+      --bg-color: #212529;
+      --text-color: #f8f9fa;
+      --card-bg: #2b3035;
+      --border-color: #495057;
+      --primary-color: #3d7efd;
+      --primary-hover: #2b6ef0;
+      --light-gray: #343a40;
+      --dark-gray: #e9ecef;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-color);
+      width: 380px;
+      padding: 16px;
+      color: var(--text-color);
+      transition: all 0.2s ease;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .app-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-container {
+      margin-bottom: 16px;
+    }
+
+    .char-counter {
+      font-size: 12px;
+      color: var(--secondary-color);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      resize: vertical;
+      background: var(--card-bg);
+      color: var(--text-color);
+      transition: all 0.2s ease;
+      min-height: 100px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    }
+
+    .select-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    select {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--card-bg);
+      color: var(--text-color);
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M6%208.825c-.2%200-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8%200-1.1.3-.3.8-.3%201.1%200l2.7%202.7%202.7-2.7c.3-.3.8-.3%201.1%200%20.3.3.3.8%200%201.1l-3.2%203.2c-.2.2-.4.3-.6.3z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+    }
+
+    .slider-container {
+      margin-bottom: 16px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .slider-name {
+      color: var(--secondary-color);
+    }
+
+    .slider-value {
+      font-weight: 500;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--light-gray);
+      appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+    }
+
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--secondary-color);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--light-gray);
+      transition: .2s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--primary-color);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+    }
+
+    .action-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .action-btn.secondary {
+      background-color: var(--secondary-color);
+    }
+
+    .action-btn.secondary:hover {
+      background-color: #5c636a;
+    }
+
+    .action-btn.success {
+      background-color: var(--success-color);
+    }
+
+    .action-btn.success:hover {
+      background-color: #157347;
+    }
+
+    .action-btn-icon {
+      font-size: 16px;
+    }
+
+    #loadingIndicator {
+      display: none;
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 6px;
+      background-color: rgba(13, 110, 253, 0.08);
+      text-align: center;
+    }
+
+    .spinner {
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 3px solid var(--primary-color);
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #replies {
+      margin-top: 16px;
+    }
+
+    .reply {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .reply-text {
+      min-height: 40px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding-right: 24px;
+    }
+
+    .reply-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      justify-content: flex-end;
+    }
+
+    .reply-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--light-gray);
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .reply-btn:hover {
+      background: var(--border-color);
+    }
+
+    .reply-btn.copy {
+      color: var(--success-color);
+    }
+
+    .reply-btn.save {
+      color: var(--primary-color);
+    }
+
+    .reply-btn.emoji {
+      color: var(--warning-color);
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 6px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-size: 13px;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    .notification.success {
+      background-color: var(--success-color);
+    }
+
+    .notification.error {
+      background-color: var(--danger-color);
+    }
+
+    .notification.warning {
+      background-color: var(--warning-color);
+      color: #212529;
+    }
+
+    .tab-container {
+      display: flex;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--secondary-color);
+      transition: all 0.2s ease;
+    }
+
+    .tab.active {
+      border-bottom: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .settings-section {
+      margin-bottom: 20px;
+    }
+
+    .settings-section h4 {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .dark-mode-toggle {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-color);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .setting-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.setting-row label {
+  width: 150px;
+  font-size: 13px;
+  color: var(--secondary-color);
+}
+
+.setting-select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="app-title">
+        <span class="icon">💬</span>
+        <span>Tweet Reply Assistant</span>
+      </div>
+      <button class="dark-mode-toggle" id="darkModeToggle">
+        <span class="icon">🌓</span>
+      </button>
+    </div>
+
+    <div class="tab-container">
+      <div class="tab active" data-tab="generate">Generate</div>
+      <div class="tab" data-tab="saved">Saved</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <div id="generateTab" class="tab-content active">
+      <div class="input-container">
+        <textarea id="tweetText" rows="4"
+          placeholder="Paste tweet text here or click 'Load Tweet'"></textarea>
+        <div id="charCounter" class="char-counter">0/280</div>
+      </div>
+
+      <div class="select-row">
+        <select id="styleSelector">
+          <option value="funny">Funny</option>
+          <option value="professional">Professional</option>
+          <option value="casual">Casual</option>
+          <option value="sarcastic">Sarcastic</option>
+          <option value="motivational">Motivational</option>
+        </select>
+        <select id="modelSelector">
+          <option value>Loading models...</option>
+        </select>
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-label">
+          <span class="slider-name">Creativity</span>
+          <span class="slider-value" id="temperatureValue">0.7</span>
+        </div>
+        <input type="range" id="temperatureSlider" min="0.1" max="1.0"
+          step="0.1" value="0.7">
+      </div>
+
+      <div class="slider-container">
+        <div class="slider-label">
+          <span class="slider-name">Tone Intensity</span>
+          <span class="slider-value" id="intensityValue">3</span>
+        </div>
+        <input type="range" id="intensitySlider" min="1" max="5" step="1"
+          value="3">
+      </div>
+
+      <div class="toggle-container">
+        <span class="toggle-label">Include Emojis</span>
+        <label class="switch">
+          <input type="checkbox" id="emojiToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="action-buttons">
+        <button class="action-btn secondary" id="loadTweet" title="Load Tweet">
+          <span class="action-btn-icon">📋</span>
+        </button>
+        <button class="action-btn" id="generate" title="Generate Replies">
+          <span class="action-btn-icon">✨</span>
+        </button>
+        <button class="action-btn success" id="quickReply"
+          style="display: none;" title="Quick Reply">
+          <span class="action-btn-icon">🚀</span>
+        </button>
+      </div>
+
+      <div id="loadingIndicator">
+        <div class="spinner"></div>
+        <div>Generating replies...</div>
+        <div id="generationStatus"
+          style="font-size: 12px; margin-top: 5px;"></div>
+      </div>
+
+      <div id="replies"></div>
+    </div>
+
+    <div id="savedTab" class="tab-content">
+      <div id="savedRepliesList" style="min-height: 200px;">
+        <!-- Saved replies will be loaded here -->
+      </div>
+    </div>
+
+    <div id="settingsTab" class="tab-content">
+      <div class="settings-section">
+        <h4>⚙️ Default Settings</h4>
+        <div class="setting-row">
+          <label for="defaultModel">Default Model:</label>
+          <select id="defaultModel" class="setting-select">
+            <!-- Options will be populated by JavaScript -->
+          </select>
+        </div>
+        <div class="toggle-container">
+          <span>Remember Last Used Model:</span>
+          <label class="switch">
+            <input type="checkbox" id="rememberModelToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h4>Generation Settings</h4>
+        <div class="toggle-container">
+          <span class="toggle-label">Auto-load Tweet</span>
+          <label class="switch">
+            <input type="checkbox" id="autoLoadToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-container">
+          <span class="toggle-label">Stream Responses</span>
+          <label class="switch">
+            <input type="checkbox" id="streamToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h4>Language</h4>
+        <select id="languageSelector">
+          <option value="english">English</option>
+          <option value="spanish">Spanish</option>
+          <option value="french">French</option>
+          <option value="german">German</option>
+          <option value="japanese">Japanese</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

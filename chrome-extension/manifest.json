@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "Tweet Reply Generator",
+    "version": "1.0",
+    "description": "Generate AI-powered Twitter replies using local Ollama models",
+    "permissions": [
+        "activeTab",
+        "scripting",
+            "storage"
+
+    ],
+    "host_permissions": [
+        "http://localhost:3001/*",
+        "https://x.com/*"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+  {
+    "matches": ["https://x.com/*"],
+    "js": ["content.js"],
+    "run_at": "document_idle"
+  }
+]
+
+}
