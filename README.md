@@ -38,7 +38,7 @@ Configure your default model and settings in the extension's settings panel.
 
 ## 📸 Screenshots
 
-![Popup Preview](snap.png)
+![Popup Preview](Snap.png)
 ![Response](response.png)
 
 
