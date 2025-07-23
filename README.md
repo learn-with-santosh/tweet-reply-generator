@@ -38,7 +38,10 @@ Configure your default model and settings in the extension's settings panel.
 
 ## 📸 Screenshots
 
+Popup Previview
 ![Popup Preview](Snap.png)
+
+Response
 ![Response](response.png)
 
 
@@ -60,4 +63,3 @@ A: We recommend llama3.2:3b for balanced quality/speed or gemma3:1b for faster r
 
 Q: Is this against Twitter's ToS?
 A: The extension doesn't automate posting - you control when replies are sent.
-
